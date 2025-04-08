@@ -3,11 +3,11 @@ from models import Playlist, Song, db
 
 
 # create a blueprint for Playlist routes
-playlist_bp = Blueprint('playlists', __name__)
+playlists_bp = Blueprint('playlists', __name__)
 
 
 # Get all playlists created by a logged-in user
-@playlist_bp.route('/playlists', methods=['GET'])
+@playlists_bp.route('/playlists', methods=['GET'])
 def get_user_playlists():
     user_id = session.get('user_id')
     if not user_id:
@@ -19,7 +19,7 @@ def get_user_playlists():
 
 
 # Get all songs in a specific playlist
-@playlist_bp.route('/playlists/<int:playlist_id>/songs', methods=['POST'])
+@playlists_bp.route('/playlists/<int:playlist_id>/songs', methods=['POST'])
 def add_song_to_playlist(playlist_id):
     user_id = session.get('user_id')
     if not user_id:
@@ -32,7 +32,7 @@ def add_song_to_playlist(playlist_id):
     return jsonify([s.to_dict()] for s in playlist.songs)
 
 # add song to a specific playlist
-@playlist_bp.route('/playlists/<int:playlist_id>/add_song', methods=['POST'])
+@playlists_bp.route('/playlists/<int:playlist_id>/add_song', methods=['POST'])
 def add_song_to_playlist(playlist_id):
     user_id = session.get('user_id')
     if not user_id:
@@ -53,7 +53,7 @@ def add_song_to_playlist(playlist_id):
 
 
 # remove a song from a playlist
-@playlist_bp.route('playlists/<int:playlist_id>/remove_song', methods=['POST'])
+@playlists_bp.route('playlists/<int:playlist_id>/remove_song', methods=['POST'])
 def remove_song_from_playlist(playlist_id):
     user_id = session.get('user_id')
     if not user_id:
