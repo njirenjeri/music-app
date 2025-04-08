@@ -1,0 +1,7 @@
+
+**
+Each playlist belongs to one user.
+A playlist can contain many songs.
+A song can be in multiple playlists.
+
+we use  a simple Flask Session-Based Authentication method
