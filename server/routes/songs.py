@@ -1,9 +1,34 @@
 from flask import Blueprint, session, request, jsonify
-from models import Song, db
+from extensions import db
+from models import Song
 import requests
 
 # Create a Blueprint for song routes
 songs_bp = Blueprint('songs', __name__)
+
+
+# 
+@songs_bp.route('/songs', methods=['GET'])
+def get_songs():
+    user_id = session.get('user_id')
+
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    songs = Song.query.filter_by(user_id=user_id).all()
+
+    if not songs:
+        return jsonify({"message": "You have not added any music"}), 200
+    
+    print([song.title for song in songs])  # Make sure you’re getting valid song data
+    # return jsonify([song.to_dict(rules=('-user', '-playlists.songs')) for song in songs])
+    # return jsonify([song.to_dict() for song in songs]), 200
+    return jsonify([{
+        "id": song.id, 
+        "title": song.title,
+        "artist": song.artist
+    } for song in songs])
+
 
 
 # Route to save a song to the user's library

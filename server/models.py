@@ -1,4 +1,4 @@
-from app import db
+from extensions import db
 from sqlalchemy_serializer import SerializerMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -21,9 +21,10 @@ class User(db.Model, SerializerMixin):
     password_hash = db.Column(db.String(128))
 
     songs = db.relationship('Song', back_populates='user', lazy=True)
+    playlists = db.relationship('Playlist', back_populates='user', lazy=True)
 
     # Don't serialize password hash
-    serialize_rules = ('-password_hash')
+    serialize_rules = ('-password_hash', '-songs.user', '-playlists.user')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -46,7 +47,11 @@ class Song(db.Model, SerializerMixin):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    serialize_rules = ('-user.songs',) #prevents nesting loop
+    user = db.relationship('User', back_populates='songs')
+    playlists = db.relationship("Playlist", secondary=playlist_songs, back_populates="songs")
+
+
+    serialize_rules = ('-user.songs', '-playlists.songs') #prevents nesting loop
 
     
 class Playlist(db.Model, SerializerMixin):
@@ -60,4 +65,5 @@ class Playlist(db.Model, SerializerMixin):
     songs = db.relationship('Song', secondary=playlist_songs, back_populates='playlists')
     user = db.relationship('User', back_populates='playlists')
 
-    serialize_rules = ('-user.playlists', '-songs.playlists')
+    serialize_rules = ('-user.playlists', '-songs.playlists', '-songs.user')
+    # prevents playlist.user.playists, playlist.songs.playlists, playlist.songs.user
