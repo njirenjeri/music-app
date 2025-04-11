@@ -1,0 +1,119 @@
+
+/* Sidebar */
+.sidebar {
+  position: sticky;
+  top: 0;
+  width: 250px;
+  height: 100%;
+  background-color: #181818; /* Dark gray background for sidebar */
+  padding: 15px;
+  color: white;
+  z-index: 90;
+  overflow-y: auto;
+  border-radius: 0px 0 0 12px;
+  margin-right: 12px;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sidebar .link {
+  cursor: pointer;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  background-color: #333; /* Dark background for links */
+  transition: all 0.3s ease;
+}
+
+.sidebar .link:hover {
+  background-color: #1db954; /* Hover effect with Spotify green */
+  color: #fff;
+}
+
+.sidebar .submenu {
+  margin-left: 20px;
+}
+
+.sidebar .submenu li {
+  list-style: none;
+  margin: 5px 0;
+  cursor: pointer;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  background-color: #333; /* Dark background for links */
+  transition: all 0.3s ease;
+}
+
+.sidebar .submenu li:hover{
+  background-color: #1db954; /* Hover effect with Spotify green */
+  color: #fff;
+}
+  
+  .playlist-section {
+    margin-top: 10px;
+    /* margin-left: 20px; */
+  }
+  
+  .new-playlist-btn {
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid #1db954;
+    color: #1db954;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .new-playlist-btn:hover {
+    background-color: #1db954;
+    color: black;
+  }
+  
+  /* .submenu {
+    list-style: none;
+    padding-left: 10px;
+  }
+  
+  .submenu li {
+    padding: 6px 0;
+    cursor: pointer;
+    color: #b3b3b3;
+    transition: color 0.2s ease;
+  }
+  
+  .submenu li:hover {
+    color: #1db954;
+  } */
+  
+
+  .new-playlist-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    width: 250px;
+    /* margin: ; */
+  }
+  
+  .new-playlist-input input {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+  }
+  
+  .new-playlist-input button {
+    padding: 6px 10px;
+    background-color: #1db954;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  

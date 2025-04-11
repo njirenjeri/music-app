@@ -24,7 +24,8 @@ class User(db.Model, SerializerMixin):
     playlists = db.relationship('Playlist', back_populates='user', lazy=True)
 
     # Don't serialize password hash
-    serialize_rules = ('-password_hash', '-songs.user', '-playlists.user')
+    # serialize_rules = ('-password_hash', '-songs.user', '-playlists.user')
+    serialize_rules = ('-password_hash', '-songs.user', '-songs.playlists', '-playlists.user', '-playlists.songs')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -51,7 +52,8 @@ class Song(db.Model, SerializerMixin):
     playlists = db.relationship("Playlist", secondary=playlist_songs, back_populates="songs")
 
 
-    serialize_rules = ('-user.songs', '-playlists.songs') #prevents nesting loop
+    # serialize_rules = ('-user.songs', '-playlists.songs') #prevents nesting loop
+    serialize_rules = ('-user.songs', '-user.playlists', '-playlists.songs', '-playlists.user')
 
     
 class Playlist(db.Model, SerializerMixin):
@@ -65,5 +67,6 @@ class Playlist(db.Model, SerializerMixin):
     songs = db.relationship('Song', secondary=playlist_songs, back_populates='playlists')
     user = db.relationship('User', back_populates='playlists')
 
-    serialize_rules = ('-user.playlists', '-songs.playlists', '-songs.user')
+    serialize_rules = ('-user.playlists', '-user.songs', '-songs.user', '-songs.playlists')
+    # serialize_rules = ('-user.playlists', '-songs.playlists', '-songs.user')
     # prevents playlist.user.playists, playlist.songs.playlists, playlist.songs.user
