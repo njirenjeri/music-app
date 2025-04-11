@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../App';
+import '../../styles/Auth.css'
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -35,6 +36,9 @@ const Register = () => {
         <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <button type="submit">Register</button>
+        <p className="auth-link">
+          Already have an account? <span onClick={() => navigate('/login')}>Log in here</span>
+        </p>
       </form>
     </div>
   )
