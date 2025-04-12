@@ -28,6 +28,16 @@ const SongCard = ({ song, onBack, onAddToPlaylist }) => {
     setShowModal(false);
   };
 
+  const handleRemoveFromPlaylist = async (playlistId) => {
+    await fetch(`${API_BASE_URL}/playlists/${playlistId}/remove_song`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ song_id: song.id }),
+    });
+    setShowModal(false);
+  };
+
   const handleCreatePlaylist = async () => {
     const res = await fetch(`${API_BASE_URL}/playlists`, {
       method: 'POST',
@@ -56,9 +66,14 @@ const SongCard = ({ song, onBack, onAddToPlaylist }) => {
             <h4>Select a Playlist</h4>
             {playlists.length ? (
               playlists.map(p => (
-                <button key={p.id} onClick={() => handleAddToPlaylist(p.id)}>
-                  {p.name}
-                </button>
+                <div key={p.id}>
+                  <button onClick={() => handleAddToPlaylist(p.id)}>
+                    Add to {p.name}
+                  </button>
+                  <button onClick={() => handleRemoveFromPlaylist(p.id)}>
+                    Remove from {p.name}
+                  </button>
+                </div>
               ))
             ) : (
               <p>No playlists found</p>
