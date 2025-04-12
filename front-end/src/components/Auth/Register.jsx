@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../App';
 import '../../styles/Auth.css'
 
-const Register = () => {
+const Register = ({ onRegister }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,6 +23,7 @@ const Register = () => {
     if (res.ok) {
       const data = await res.json();
       localStorage.setItem('user', JSON.stringify(data.user));
+      onRegister(); // Notify parent component about registration
       navigate('/dashboard');
     }
   };
