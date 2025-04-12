@@ -248,6 +248,11 @@ const Dashboard = () => {
               onBack={() => setSelectedView('songs')}
               onAddToPlaylist={() => alert('Add to playlist')}
             />
+          ) : selectedView === 'artists' ? (
+            <div>
+              <h2>Artists</h2>
+              <p>Display artist-related content here.</p>
+            </div>
           ) : selectedView === 'songs' ? (
             <ul className="song-list">
               <h2>My Music</h2>
