@@ -15,9 +15,10 @@ global.css
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 85vh;
+    height: 80vh;
     padding: 20px;
     margin: 10px 100px;
+    overflow-y: hidden;
   }
  
   img{

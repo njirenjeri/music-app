@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../styles/SongCard.css'
 import { API_BASE_URL } from '../App';
 
-const SongCard = ({ song, onBack, onAddToPlaylist }) => {
+const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId}) => {
   const [playlists, setPlaylists] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -28,27 +28,101 @@ const SongCard = ({ song, onBack, onAddToPlaylist }) => {
     setShowModal(false);
   };
 
-  const handleCreatePlaylist = async () => {
-    const res = await fetch(`${API_BASE_URL}/playlists`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ name: newPlaylistName }),
-    });
-    const data = await res.json();
-    setPlaylists(prev => [...prev, data]);
-    setNewPlaylistName('');
-    setShowForm(false);
+  // const handleCreatePlaylist = async () => {
+  //   const res = await fetch(`${API_BASE_URL}/playlists`, {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     credentials: 'include',
+  //     body: JSON.stringify({ name: newPlaylistName }),
+  //   });
+  //   const data = await res.json();
+  //   setPlaylists(prev => [...prev, data]);
+  //   setNewPlaylistName('');
+  //   setShowForm(false);
+  // };
+
+  const handleCreateAndAddToPlaylist = async (playlistName) => {
+    try {
+      // create the playlist
+      const createRes = await fetch(`${API_BASE_URL}/playlists`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify({name: playlistName}),
+      });
+
+      if (!createRes.ok) {
+        throw new Error('Failed to create playlist')
+      }
+
+      const newPlaylist = await createRes.json()
+
+      // add the song to that playlist
+      const addRes = await fetch (`${API_BASE_URL}/playlists/${newPlaylist.id}/add_song`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'include',
+        body: JSON.stringify({song_id : song.id}),
+      });
+
+      if (!addRes.ok) {
+        throw new Error('Failed to add song to playlist');
+      }
+
+      onAddToPlaylist(); // to refresh the side bar
+      setShowModal(false); // close the modal
+    } catch (err){
+      console.error(err)
+      alert('Something went wrong creating the playlist')
+    }
+  }
+
+
+
+  const handleRemoveFromPlaylist = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/playlists/${playlistId}/remove_song`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ song_id: song.id }),
+      });
+  
+      if (!res.ok) {
+        throw new Error('Failed to remove song');
+      }
+  
+      alert('Song removed from playlist');
+      onAddToPlaylist(); // refresh the playlist
+      onBack(); // go back to playlist view
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong');
+    }
   };
+  
+
 
   return (
     <div className="song-card">
       <button onClick={onBack}>Back</button>
       <h3>{song.title}</h3>
       <p>{song.artist}</p>
-      <audio controls src={song.preview_url}></audio>
-
-      <button onClick={() => setShowModal(true)}>Add to Playlist</button>
+      <audio 
+        controls 
+        src={song.preview_url
+          ? song.preview_url
+          : `${API_BASE_URL}/uploads/${song.filename}`
+        }
+      ></audio>
+    
+      {context === 'playlist' ? (
+        <button onClick={() => handleRemoveFromPlaylist} className='delete-btn'>Remove From Playlist</button>
+      ) : (
+         <button onClick={() => setShowModal(true)}>Add to Playlist</button> 
+        
+      )
+    }
 
       {showModal && (
         <div className="modal-overlay">
@@ -72,7 +146,7 @@ const SongCard = ({ song, onBack, onAddToPlaylist }) => {
                   onChange={(e) => setNewPlaylistName(e.target.value)}
                   placeholder="New playlist name"
                 />
-                <button onClick={handleCreatePlaylist}>Create</button>
+                <button onClick={() => handleCreateAndAddToPlaylist(newPlaylistName)}>Create</button>
               </div>
             ) : (
               <button onClick={() => setShowForm(true)}>+ New Playlist</button>

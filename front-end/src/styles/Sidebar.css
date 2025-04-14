@@ -55,65 +55,33 @@
     /* margin-left: 20px; */
   }
   
-  .new-playlist-btn {
-    display: block;
-    width: 100%;
-    background-color: transparent;
-    border: 1px solid #1db954;
-    color: #1db954;
-    padding: 8px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+  .playlist-item {
+    position: relative;
+    padding: 8px 12px;
   }
   
-  .new-playlist-btn:hover {
-    background-color: #1db954;
-    color: black;
-  }
-  
-  /* .submenu {
-    list-style: none;
-    padding-left: 10px;
-  }
-  
-  .submenu li {
-    padding: 6px 0;
-    cursor: pointer;
-    color: #b3b3b3;
-    transition: color 0.2s ease;
-  }
-  
-  .submenu li:hover {
-    color: #1db954;
-  } */
-  
-
-  .new-playlist-input {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .playlist-actions {
+    display: none;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
     gap: 8px;
-    margin-bottom: 10px;
-    width: 250px;
-    /* margin: ; */
   }
   
-  .new-playlist-input input {
-    flex: 1;
-    padding: 6px 10px;
-    border-radius: 4px;
-    border: none;
-    outline: none;
+  .playlist-item:hover .playlist-actions {
+    display: flex;
   }
   
-  .new-playlist-input button {
-    padding: 6px 10px;
-    background-color: #1db954;
-    color: black;
-    border: none;
-    border-radius: 4px;
+  .icon {
     cursor: pointer;
+    color: #666;
+    font-size: 16px;
   }
   
+  .icon:hover {
+    color: #000;
+  }
+  
+  
+ 

@@ -6,6 +6,24 @@ import requests
 # Create a Blueprint for song routes
 songs_bp = Blueprint('songs', __name__)
 
+def song_to_dict(song):
+    return {
+        "id": song.id,
+        "title": song.title,
+        "artist": song.artist,
+        "filename": song.filename,
+        "preview_url": song.preview_url,  
+    }
+
+
+# def song_to_dict(song):
+#     return {
+#         "id": song.id,
+#         "title": song.title,
+#         "artist": song.artist,
+#         "filename": song.filename,
+#         "preview_url": song.preview_url,  # <-- Ensure this is included
+#     }
 
 # 
 @songs_bp.route('/songs', methods=['GET'])
@@ -20,14 +38,15 @@ def get_songs():
     if not songs:
         return jsonify({"message": "You have not added any music"}), 200
     
-    print([song.title for song in songs])  # Make sure you’re getting valid song data
-    # return jsonify([song.to_dict(rules=('-user', '-playlists.songs')) for song in songs])
-    # return jsonify([song.to_dict() for song in songs]), 200
+    print([song.title for song in songs])  
     return jsonify([{
-        "id": song.id, 
-        "title": song.title,
-        "artist": song.artist
-    } for song in songs])
+    "id": song.id,
+    "title": song.title,
+    "artist": song.artist,
+    "filename": song.filename,
+    "preview_url": song.preview_url  
+} for song in songs])
+    # return jsonify([song_to_dict(s) for s in songs])
 
 
 

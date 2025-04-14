@@ -6,36 +6,74 @@ from models import Playlist, Song
 # create a blueprint for Playlist routes
 playlists_bp = Blueprint('playlists', __name__)
 
-# create playlist
+
+
+# # create playlist
+# @playlists_bp.route('/playlists', methods=['POST'])
+# def create_playlist():
+#     try:
+#         user_id = session.get('user_id')
+
+#         if not user_id:
+#             return jsonify({"error": "Unauthorized"}), 401
+    
+#         data = request.get_json()
+#         name = data.get('name')
+
+#         if not name:
+#             return jsonify({"error": "Playlist name required"}), 400
+    
+#         # check if playlist name exists
+#         existing = Playlist.query.filter_by(name=name, user_id=user_id).first()
+#         if existing:
+#             return jsonify({"error": "Playlist name already taken"}), 409 # conflict
+
+#         new_playlist = Playlist(name=name, user_id=user_id)
+#         db.session.add(new_playlist)
+#         db.session.commit()
+
+#         return jsonify(new_playlist.to_dict()), 201
+    
+#     except Exception as e:
+#         print("Error creating Playlist", e)
+#         return jsonify({"error": "Internal Server Error"}), 500
+
+
+# create playlist and add song route
 @playlists_bp.route('/playlists', methods=['POST'])
 def create_playlist():
-    try:
-        user_id = session.get('user_id')
-
-        if not user_id:
-            return jsonify({"error": "Unauthorized"}), 401
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
     
-        data = request.get_json()
-        name = data.get('name')
+    data = request.get_json()
+    name = data.get('name')
+    song_id = data.get('song_id')
 
-        if not name:
-            return jsonify({"error": "Playlist name required"}), 400
+    if not name:
+        return jsonify({"error": "Playlist name required"}), 400
     
-        # check if playlist name exists
-        existing = Playlist.query.filter_by(name=name, user_id=user_id).first()
-        if existing:
-            return jsonify({"error": "Playlist name already taken"}), 409 # conflict
+    new_playlist = Playlist(name=name, user_id=user_id)
 
-        new_playlist = Playlist(name=name, user_id=user_id)
-        db.session.add(new_playlist)
-        db.session.commit()
+    if song_id:
+        # confirm song belongs to user
+        song = Song.query.filter_by(id=song_id, user_id=user_id).first()
+        if not song:
+            return jsonify({"error": "Song not found"}), 400
+        
+        new_playlist.songs.append(song)
 
-        return jsonify(new_playlist.to_dict()), 201
-    
-    except Exception as e:
-        print("Error creating Playlist", e)
-        return jsonify({"error": "Internal Server Error"}), 500
+    db.session.add(new_playlist)
+    db.session.commit()
 
+    return jsonify({
+        "message": f"Playlist '{new_playlist.name}' created",
+        "playlist": {
+            "id": new_playlist.id,
+            "name": new_playlist.name,
+            "songs": [{"id": s.id, "title": s.title} for s in new_playlist.songs]
+        }
+    }), 201
 
 
 # Get all playlists created by a logged-in user
@@ -117,3 +155,36 @@ def remove_song_from_playlist(playlist_id):
         db.session.commit()
 
     return jsonify({"message": "Song removed from playlist"})
+
+
+# update playlist name
+@playlists_bp.route('/playlists/<int:playlist_id>', methods=['PATCH'])
+def update_playlist(playlist_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    data = request.get_json()
+    playlist = Playlist.query.get_or_404(playlist_id)
+
+    name = data.get('name')
+    if name:
+        playlist.name = name
+        db.session.commit()
+        return playlist.to_dict(), 200
+    return jsonify({'error': 'Name is required'}), 400
+
+
+# Delete a Playlist
+@playlists_bp.route('/playlists/<int:playlist_id>', methods=['DELETE'])
+def delete_playlist(playlist_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    playlist = Playlist.query.get_or_404(playlist_id)
+
+   
+    db.session.delete(playlist)
+    db.session.commit()
+    return jsonify({'message': 'Playlist deleted'}), 200

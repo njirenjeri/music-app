@@ -1,19 +1,42 @@
 import React, { useState } from 'react';
 import '../styles/Sidebar.css'
+// import { BsPencil, BsTrash } from 'react-icons/bs';
+import PlayList from '../pages/Playlists';
+import { API_BASE_URL } from '../App';
 
 
-const Sidebar = ({ playlists, onSelect, onCreatePlaylist }) => {
+
+const Sidebar = ({ playlists, setPlaylists, onSelect, onEdit, onDelete }) => {
   const [showPlaylists, setShowPlaylists] = useState(false);
-  const [showInput, setShowInput] = useState(false);
-  const [newName, setNewName] = useState('');
+  // const [playlists, setPlaylists] = useState([]);
 
-  const handleCreate = () => {
-    if (newName.trim()) {
-      onCreatePlaylist(newName);
-      setNewName('');
-      setShowInput(false);
-    }
-  };
+// Edit handler
+const handleEditPlaylist = async (id, newName) => {
+  const res = await fetch(`${API_BASE_URL}/playlists/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ name: newName }),
+  });
+  const updated = await res.json();
+
+  // Update local state
+  setPlaylists(prev =>
+    prev.map(p => (p.id === id ? { ...p, name: updated.name } : p))
+  );
+};
+
+// Delete handler
+const handleDeletePlaylist = async (id) => {
+  await fetch(`${API_BASE_URL}/playlists/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  });
+
+  // Remove from local state
+  setPlaylists(prev => prev.filter(p => p.id !== id));
+};
+
 
   return (
     <aside className="sidebar">
@@ -24,32 +47,14 @@ const Sidebar = ({ playlists, onSelect, onCreatePlaylist }) => {
       <div className="link" onClick={() => setShowPlaylists(!showPlaylists)}>
         🎧 Playlists {showPlaylists ? '▾' : '▸'}
       </div>
-
+      
       {showPlaylists && (
-        <div className="playlist-section">
-          {!showInput ? (
-            <button className="new-playlist-btn" onClick={() => setShowInput(true)}>
-              + New Playlist
-            </button>
-          ) : (
-            <div className="new-playlist-input">
-              <input
-                type="text"
-                placeholder="Playlist name"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-              />
-              <button onClick={handleCreate}>Add</button>
-            </div>
-          )}
-          <ul className="submenu">
-            {playlists.map((p) => (
-              <li key={p.id} onClick={() => onSelect('playlist', p)}>
-                {p.name}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <PlayList
+        playlists={playlists}
+        onSelect={onSelect}
+        onEdit={handleEditPlaylist}
+        onDelete={handleDeletePlaylist}      
+      />
       )}
     </aside>
   );
