@@ -34,10 +34,9 @@ body {
   min-width: 700px;
   padding: 20px;
   background-color: #121212;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow-y: hidden;
   /* width: 100%; */
   border-radius: 0 0 12px 0;
 }
@@ -52,12 +51,13 @@ body {
 .song-list li,
 .search-list li,
 .search-item {
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: #121212;
   padding: 10px 15px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   border-radius: 6px;
   color: white;
   transition: background 0.2s;

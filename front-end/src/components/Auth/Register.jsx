@@ -22,11 +22,16 @@ const Register = () => {
     });
 
     if (res.ok) {
-      setMessage('Registration successful! Redirecting to login...');
-      setTimeout(() => navigate('/login'), 2000); // Redirect after 2 seconds
-    } else {
-      const errorData = await res.json();
-      setMessage(errorData.error || 'An error occurred during registration.');
+
+      const data = await res.json();
+      console.log("Registered user data: ", data)
+      localStorage.setItem('user', JSON.stringify(data.user));
+      // navigate('/dashboard');
+      window.location.href = '/dashboard';
+    }else{
+      const error = await res.json();
+      console.error("Registration Failed:", error?.error || 'unknown error');
+
     }
   };
 

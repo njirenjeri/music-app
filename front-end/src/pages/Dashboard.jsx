@@ -158,7 +158,10 @@ const Dashboard = () => {
 
   const fetchSongs = async () => {
     const res = await fetch(`${API_BASE_URL}/songs`, { credentials: 'include' });
-    if (res.ok) setSongs(await res.json());
+    const data = await res.json();
+    console.log("Fetched Songs: ", data);
+    setSongs(Array.isArray(data) ? data : data.songs || []);
+    // if (res.ok) setSongs(await res.json());
   };
 
   const fetchPlaylists = async () => {
@@ -216,11 +219,14 @@ const Dashboard = () => {
         });
         if (res.ok) fetchSongs();
       };
-
-  const handleSelect = (view, data = null) => {
-    setSelectedView(view);
-    setSelectedData(data);
-  };
+      
+      const handleSelect = (view, data = null) => {
+        setSelectedView(view);
+        setSelectedData(data);
+      };
+      
+      console.log("Selected View:", selectedView);
+      console.log("Selected Data:", selectedData);
 
   return (
     <div className="dashboard-layout">
@@ -243,21 +249,35 @@ const Dashboard = () => {
               </ul>
             </div>
           ) :   selectedView === 'songCard' && selectedData ? (
+          
             <SongCard
               song={selectedData}
-              onBack={() => setSelectedView('songs')}
-              onAddToPlaylist={() => alert('Add to playlist')}
+              playlistId= {selectedData.playlist_id}
+              context={selectedData.context}
+              onBack={() => {
+                if (selectedView === 'playlist') {
+                  setSelectedView('playlist')
+                }else{
+                  setSelectedView('songs')
+                }
+              }}
+               onAddToPlaylist={() => {
+                fetchPlaylists();
+              }}
+              
             />
+
           ) : selectedView === 'artists' ? (
             <div>
               <h2>Artists</h2>
               <p>Display artist-related content here.</p>
             </div>
+
           ) : selectedView === 'songs' ? (
             <ul className="song-list">
               <h2>My Music</h2>
               {songs.map((song) => (
-                <li key={song.id} onClick={() => handleSelect('songCard', song)}>
+                <li key={song.id} onClick={() => handleSelect('songCard', {...song, context: 'songs'})}>
                   {song.title} by {song.artist}
                 </li>
               ))}
@@ -269,7 +289,7 @@ const Dashboard = () => {
               <ul className="song-list">
                 {selectedData.songs && selectedData.songs.length > 0 ? (
                   selectedData.songs.map((song) => (
-                    <li key={song.id} onClick={() => handleSelect('songCard', song)}>
+                    <li key={song.id} onClick={() => handleSelect('songCard', {...song, context: 'playlist'})}>
                       {song.title} by {song.artist}
                     </li>
                   ))

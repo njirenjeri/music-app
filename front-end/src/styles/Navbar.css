@@ -18,8 +18,8 @@
 
    
   .navbar input {
-    padding: 8px 12px;
-    border-radius: 4px;
+    padding: 8px 25px;
+    border-radius: 30px;
     border: none;
     outline: none;
     width: 50%;
@@ -31,6 +31,19 @@
   .user-info{
     display: flex;
     flex-direction: column;
+  }
+
+  .logo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .logo h4{
+    /* font-family: 'Avenir'; */
+    font-weight: 700;
+    font-size: 17px;
+    /* align-self: self-end; */
   }
 
   .logo img{

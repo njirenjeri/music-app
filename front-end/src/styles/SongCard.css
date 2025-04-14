@@ -113,6 +113,10 @@
   .modal-content button {
     margin: 5px;
   }
+
+  .song-card .delete-btn{
+    background-color: crimson;
+  }
   
 
   /* Make the layout more responsive */
