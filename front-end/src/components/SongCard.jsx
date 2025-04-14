@@ -43,7 +43,8 @@ const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId }) => {
 
       if (!createRes.ok) {
         const errorData = await createRes.json();
-        throw new Error(errorData.error || 'Failed to create playlist');
+        alert(errorData.error || 'Failed to create playlist');
+        return;
       }
 
       const newPlaylist = await createRes.json();
@@ -56,7 +57,8 @@ const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId }) => {
       });
 
       if (!addRes.ok) {
-        throw new Error('Failed to add song to playlist');
+        alert('Failed to add song to playlist');
+        return;
       }
 
       onAddToPlaylist();
