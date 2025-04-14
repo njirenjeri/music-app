@@ -46,6 +46,9 @@ const handleDeletePlaylist = async (id) => {
 
       <div className="link" onClick={() => setShowPlaylists(!showPlaylists)}>
         🎧 Playlists {showPlaylists ? '▾' : '▸'}
+      </div> 
+      <div className="link" onClick={() => onSelect('artists')}>
+        🎤 Artists
       </div>
       
       {showPlaylists && (

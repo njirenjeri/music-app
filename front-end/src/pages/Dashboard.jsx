@@ -249,7 +249,7 @@ const Dashboard = () => {
               </ul>
             </div>
           ) :   selectedView === 'songCard' && selectedData ? (
-            <>
+          
             <SongCard
               song={selectedData}
               playlistId= {selectedData.playlist_id}
@@ -266,7 +266,13 @@ const Dashboard = () => {
               }}
               
             />
-            </>
+
+          ) : selectedView === 'artists' ? (
+            <div>
+              <h2>Artists</h2>
+              <p>Display artist-related content here.</p>
+            </div>
+
           ) : selectedView === 'songs' ? (
             <ul className="song-list">
               <h2>My Music</h2>

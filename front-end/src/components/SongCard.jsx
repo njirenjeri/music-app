@@ -28,18 +28,7 @@ const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId}) => {
     setShowModal(false);
   };
 
-  // const handleCreatePlaylist = async () => {
-  //   const res = await fetch(`${API_BASE_URL}/playlists`, {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     credentials: 'include',
-  //     body: JSON.stringify({ name: newPlaylistName }),
-  //   });
-  //   const data = await res.json();
-  //   setPlaylists(prev => [...prev, data]);
-  //   setNewPlaylistName('');
-  //   setShowForm(false);
-  // };
+
 
   const handleCreateAndAddToPlaylist = async (playlistName) => {
     try {
@@ -99,7 +88,30 @@ const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId}) => {
       console.error(err);
       alert('Something went wrong');
     }
-  };
+
+//   const handleRemoveFromPlaylist = async (playlistId) => {
+//     await fetch(`${API_BASE_URL}/playlists/${playlistId}/remove_song`, {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       credentials: 'include',
+//       body: JSON.stringify({ song_id: song.id }),
+//     });
+//     setShowModal(false);
+//   };
+
+//   const handleCreatePlaylist = async () => {
+//     const res = await fetch(`${API_BASE_URL}/playlists`, {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       credentials: 'include',
+//       body: JSON.stringify({ name: newPlaylistName }),
+//     });
+//     const data = await res.json();
+//     setPlaylists(prev => [...prev, data]);
+//     setNewPlaylistName('');
+//     setShowForm(false);
+
+//   };
   
 
 
@@ -130,9 +142,14 @@ const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId}) => {
             <h4>Select a Playlist</h4>
             {playlists.length ? (
               playlists.map(p => (
-                <button key={p.id} onClick={() => handleAddToPlaylist(p.id)}>
-                  {p.name}
-                </button>
+                <div key={p.id}>
+                  <button onClick={() => handleAddToPlaylist(p.id)}>
+                    Add to {p.name}
+                  </button>
+                  <button onClick={() => handleRemoveFromPlaylist(p.id)}>
+                    Remove from {p.name}
+                  </button>
+                </div>
               ))
             ) : (
               <p>No playlists found</p>
