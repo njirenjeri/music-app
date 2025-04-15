@@ -2,7 +2,7 @@ import React from 'react';
 import '../styles/Navbar.css'
 import logo from '../jukebox.png'
 
-const Navbar = ({ query, setQuery, username, onLogout }) => (
+const Navbar = ({ query, setQuery, username, onLogout, isLoading }) => (
   <nav className="navbar">
     <div className="logo">
         <img src={logo} alt="logo" /> <h4>The JukeBox</h4>
@@ -14,6 +14,7 @@ const Navbar = ({ query, setQuery, username, onLogout }) => (
       value={query}
       onChange={(e) => setQuery(e.target.value)}
     />
+    {isLoading && <span>Loading...</span>}
     <div className="user-info">
       <span>Hi, {username}</span>
       <button onClick={onLogout}>Logout</button>
