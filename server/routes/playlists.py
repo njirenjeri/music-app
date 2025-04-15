@@ -8,72 +8,29 @@ playlists_bp = Blueprint('playlists', __name__)
 
 
 
-# # create playlist
-# @playlists_bp.route('/playlists', methods=['POST'])
-# def create_playlist():
-#     try:
-#         user_id = session.get('user_id')
-
-#         if not user_id:
-#             return jsonify({"error": "Unauthorized"}), 401
-    
-#         data = request.get_json()
-#         name = data.get('name')
-
-#         if not name:
-#             return jsonify({"error": "Playlist name required"}), 400
-    
-#         # check if playlist name exists
-#         existing = Playlist.query.filter_by(name=name, user_id=user_id).first()
-#         if existing:
-#             return jsonify({"error": "Playlist name already taken"}), 409 # conflict
-
-#         new_playlist = Playlist(name=name, user_id=user_id)
-#         db.session.add(new_playlist)
-#         db.session.commit()
-
-#         return jsonify(new_playlist.to_dict()), 201
-    
-#     except Exception as e:
-#         print("Error creating Playlist", e)
-#         return jsonify({"error": "Internal Server Error"}), 500
-
-
 # create playlist and add song route
 @playlists_bp.route('/playlists', methods=['POST'])
 def create_playlist():
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({"error": "Unauthorized"}), 401
-    
+
     data = request.get_json()
     name = data.get('name')
-    song_id = data.get('song_id')
 
     if not name:
         return jsonify({"error": "Playlist name required"}), 400
-    
+
+    # Check if playlist name already exists for the user
+    existing_playlist = Playlist.query.filter_by(name=name, user_id=user_id).first()
+    if existing_playlist:
+        return jsonify({"error": "Playlist name already taken"}), 409
+
     new_playlist = Playlist(name=name, user_id=user_id)
-
-    if song_id:
-        # confirm song belongs to user
-        song = Song.query.filter_by(id=song_id, user_id=user_id).first()
-        if not song:
-            return jsonify({"error": "Song not found"}), 400
-        
-        new_playlist.songs.append(song)
-
     db.session.add(new_playlist)
     db.session.commit()
 
-    return jsonify({
-        "message": f"Playlist '{new_playlist.name}' created",
-        "playlist": {
-            "id": new_playlist.id,
-            "name": new_playlist.name,
-            "songs": [{"id": s.id, "title": s.title} for s in new_playlist.songs]
-        }
-    }), 201
+    return jsonify(new_playlist.to_dict()), 201
 
 
 # Get all playlists created by a logged-in user
@@ -89,7 +46,7 @@ def get_user_playlists():
 
 
 # Get all songs in a specific playlist
-@playlists_bp.route('/playlists/<int:playlist_id>/songs', methods=['POST'])
+@playlists_bp.route('/playlists/<int:playlist_id>/songs', methods=['GET'])
 def get_playlist_songs(playlist_id):
     user_id = session.get('user_id')
     if not user_id:
@@ -136,25 +93,32 @@ def add_song_to_playlist(playlist_id):
 
 
 # remove a song from a playlist
-@playlists_bp.route('playlists/<int:playlist_id>/remove_song', methods=['POST'])
+@playlists_bp.route('/playlists/<int:playlist_id>/remove_song', methods=['POST'])
 def remove_song_from_playlist(playlist_id):
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({"error": "Unauthorized"}), 401
-    
-    
+
     data = request.get_json()
-    song = Song.query.get_or_404(data['song_id'])
-    playlist = Playlist.query.get_or_404(playlist_id)
+    song_id = data.get('song_id')
+    if not song_id:
+        return jsonify({"error": "Song ID is required"}), 400
 
-    if playlist.user_id != user_id:
-        return jsonify({"error": "Forbidden"}), 403
-    
-    if song in playlist.songs:
-        playlist.songs.remove(song)
-        db.session.commit()
+    playlist = Playlist.query.filter_by(id=playlist_id, user_id=user_id).first()
+    if not playlist:
+        return jsonify({"error": "Playlist not found"}), 404
 
-    return jsonify({"message": "Song removed from playlist"})
+    song = Song.query.filter_by(id=song_id).first()
+    if not song:
+        return jsonify({"error": "Song not found"}), 404
+
+    if song not in playlist.songs:
+        return jsonify({"error": "Song is not in the playlist"}), 400
+
+    playlist.songs.remove(song)
+    db.session.commit()
+
+    return jsonify({"message": "Song removed from playlist"}), 200
 
 
 # update playlist name

@@ -15,17 +15,6 @@ def song_to_dict(song):
         "preview_url": song.preview_url,  
     }
 
-
-# def song_to_dict(song):
-#     return {
-#         "id": song.id,
-#         "title": song.title,
-#         "artist": song.artist,
-#         "filename": song.filename,
-#         "preview_url": song.preview_url,  # <-- Ensure this is included
-#     }
-
-# 
 @songs_bp.route('/songs', methods=['GET'])
 def get_songs():
     user_id = session.get('user_id')
@@ -38,17 +27,7 @@ def get_songs():
     if not songs:
         return jsonify({"message": "You have not added any music"}), 200
     
-    print([song.title for song in songs])  
-    return jsonify([{
-    "id": song.id,
-    "title": song.title,
-    "artist": song.artist,
-    "filename": song.filename,
-    "preview_url": song.preview_url  
-} for song in songs])
-    # return jsonify([song_to_dict(s) for s in songs])
-
-
+    return jsonify([song.to_dict() for song in songs])
 
 # Route to save a song to the user's library
 @songs_bp.route('/songs', methods=['POST'])

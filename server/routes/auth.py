@@ -22,7 +22,7 @@ def sign_up():
 
     # Log user in by saving ID to session
     session['user_id'] = user.id
-    return jsonify({"message": "Registered and logged in", 'user': user.to_dict()}), 201
+    return jsonify({"message": "Registered and logged in", 'user': user.to_dict(rules=('-songs', '-playlists'))}), 201
 
 # Route to login an existing user
 @auth_bp.route('/login', methods=['POST'])
