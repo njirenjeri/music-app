@@ -43,6 +43,18 @@ def get_user_playlists():
     playlists = Playlist.query.filter_by(user_id=user_id).all()
     return jsonify([p.to_dict() for p in playlists])
 
+# # get a specific playlist
+# @playlists_bp.route('/playlists/<int:playlist_id>', methods=['GET'])
+# def get_playlist(playlist_id):
+#     user_id = session.get('user_id')
+#     playlist = Playlist.query.filter_by(id=playlist_id, user_id=user_id).first()
+
+#     if not playlist:
+#         return jsonify({"error": "Playlist not found"}), 404
+
+#     return jsonify(playlist.to_dict()), 200
+
+
 
 
 # Get all songs in a specific playlist
@@ -80,10 +92,6 @@ def add_song_to_playlist(playlist_id):
     
     if song in playlist.songs:
         return jsonify({"error": "Song already in playlist"}), 200
-    # playlist = Playlist.query.get_or_404(playlist_id)
-
-    # if playlist.user_id != user_id:
-    #     return jsonify({"error": "Forbidden"}), 403
     
     # if song not in playlist.songs:
     playlist.songs.append(song)
@@ -117,6 +125,12 @@ def remove_song_from_playlist(playlist_id):
 
     playlist.songs.remove(song)
     db.session.commit()
+
+    # # Now check if the playlist is empty
+    # if len(playlist.songs) == 0:
+    #     db.session.delete(playlist)
+    #     db.session.commit()
+    #     return jsonify({"message": "Song removed. Playlist was empty and has been deleted."})
 
     return jsonify({"message": "Song removed from playlist"}), 200
 

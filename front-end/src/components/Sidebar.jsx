@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/Sidebar.css'
-// import { BsPencil, BsTrash } from 'react-icons/bs';
-import PlayList from '../pages/Playlists';
+import PlayList from './Playlists';
 import { API_BASE_URL } from '../App';
 
 

@@ -18,6 +18,14 @@ body {
   height: 100vh;
 }
 
+.download-notification {
+  background: #d4edda;
+  color: #155724;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
 
 /* Main Content Area */
 .main-content-wrapper {
@@ -36,9 +44,30 @@ body {
   background-color: #121212;
   display: flex;
   flex-direction: column;
-  overflow-y: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
   /* width: 100%; */
   border-radius: 0 0 12px 0;
+}
+
+.song-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.song-list-header button {
+  background-color: #ececec;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  color: #333;
+}
+
+
+.main-content::-webkit-scrollbar{
+  display: none;
 }
 
 .song-list,

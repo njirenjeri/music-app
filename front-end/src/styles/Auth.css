@@ -1,3 +1,23 @@
+.form-message {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 5px;
+  font-size: 0.95rem;
+}
+
+.form-message.error {
+  background-color: #ffe6e6;
+  color: #b30000;
+  border: 1px solid #ffcccc;
+}
+
+.form-message.success {
+  background-color: #e6ffe6;
+  color: #006600;
+  border: 1px solid #b3ffb3;
+}
+
+
 .auth-container {
     max-width: 400px;
     margin: 80px auto;
@@ -63,9 +83,9 @@
     text-decoration: underline;
   }
 
-  .error-message {
+  /* .error-message {
     color: #ff4d4d;
     font-size: 14px;
     margin-bottom: 10px;
     text-align: center;
-  }
+  } */
