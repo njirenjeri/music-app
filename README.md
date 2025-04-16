@@ -1,4 +1,5 @@
 # music-app
+**The JukeBox** is an application that allows users to 
 
 ## Features
 - User authentication (register, login, logout)
@@ -7,20 +8,13 @@
 - Search for songs using iTunes API
 - Responsive design for mobile and desktop
 
-## Setup Instructions
+## Tech Stack
+- Frontend: React, CSS
+- Backend: Flask
 
-### Backend
-1. Navigate to the `server` directory.
-2. Install dependencies: `pip install -r requirements.txt`.
-3. Run the Flask app: `flask run`.
+## Setup Instructions
 
 ### Frontend
 1. Navigate to the `front-end` directory.
 2. Install dependencies: `npm install`.
-3. Start the development server: `npm run dev`.
-
-### Database
-1. Run migrations: `flask db upgrade`.
-
-### Environment Variables
-- Set `FLASK_APP=app.py` and `FLASK_ENV=development` for development.
+3. Start the development server: `npm start`.

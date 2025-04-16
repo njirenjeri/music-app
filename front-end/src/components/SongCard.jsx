@@ -2,11 +2,17 @@ import React, { useState, useEffect } from 'react';
 import '../styles/SongCard.css';
 import { API_BASE_URL } from '../App';
 
-const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId }) => {
+const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId, setMessage}) => {
   const [playlists, setPlaylists] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
+
+
+  useEffect(() => {
+    console.log("Playlist ID received in SongCard:", playlistId);
+  }, []);
+  
 
   useEffect(() => {
     let isMounted = true;
@@ -57,7 +63,8 @@ const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId }) => {
       });
 
       if (!addRes.ok) {
-        alert('Failed to add song to playlist');
+        setMessage('Failed to add song to playlist');
+        setTimeout(() => setMessage(''), 3000)
         return;
       }
 
@@ -65,11 +72,23 @@ const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId }) => {
       setShowModal(false);
     } catch (err) {
       console.error(err);
-      alert('Something went wrong creating the playlist');
+      setMessage('Something went wrong creating the playlist');
+      setTimeout(() => setMessage(''), 3000)
     }
   };
 
   const handleRemoveFromPlaylist = async () => {
+    if (!playlistId) {
+      setMessage("playlist ID is missing!")
+      setTimeout(() => setMessage(''), 3000)
+      return
+    }    
+    if (!song || !song.id) {
+      setMessage("Song ID is missing!");
+      setTimeout(() => setMessage(''), 3000);
+      return;
+    }
+    
     try {
       const res = await fetch(`${API_BASE_URL}/playlists/${playlistId}/remove_song`, {
         method: 'POST',
@@ -77,18 +96,37 @@ const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId }) => {
         credentials: 'include',
         body: JSON.stringify({ song_id: song.id }),
       });
-
-      if (!res.ok) {
-        throw new Error('Failed to remove song');
+    
+      console.log("Response status:", res.status);
+    
+      let data;
+      try {
+        data = await res.json();
+        console.log("Parsed JSON:", data);
+      } catch (jsonErr) {
+        console.error("JSON parsing failed:", jsonErr);
+        const text = await res.text();
+        console.log("Raw response text:", text);
+        throw new Error('Failed to parse response JSON');
       }
 
-      alert('Song removed from playlist');
+    
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to remove song');
+      }
+    
+      setMessage(data.message);
+      setTimeout(() => setMessage(''), 3000);
+
       onAddToPlaylist();
       onBack();
+    
     } catch (err) {
-      console.error(err);
-      alert('Something went wrong');
+      console.error("Final catch error:", err);
+      setMessage('Something went wrong');
+      setTimeout(() => setMessage(''), 3000);
     }
+    
   };
 
   return (
@@ -121,7 +159,7 @@ const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId }) => {
               playlists.map((p) => (
                 <div key={p.id}>
                   <button onClick={() => handleAddToPlaylist(p.id)}>
-                    Add to {p.name}
+                    {p.name}
                   </button>
                 </div>
               ))

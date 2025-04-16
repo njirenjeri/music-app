@@ -16,7 +16,7 @@ const Navbar = ({ query, setQuery, username, onLogout, isLoading }) => (
     />
     {isLoading && <span>Loading...</span>}
     <div className="user-info">
-      <span>Hi, {username}</span>
+      <span>Hi, {username.charAt(0).toUpperCase() + username.slice(1)}</span>
       <button onClick={onLogout}>Logout</button>
     </div>
   </nav>

@@ -31,14 +31,16 @@ const Login = ({ onLogin }) => {
     } else {
       const errorData = await res.json();
       setError(errorData.error || 'An error occurred');
+      setTimeout(() => setError(''), 3000)
+
     }
   };
 
   return (
     <div className="auth-container">
       <h2>Login</h2>
-      {error && <p className="error-message">{error}</p>}
-      {message && <p className="success-message">{message}</p>} {/* Display success message */}
+      {error && (<p className="form-message error">{error}</p>)}
+      {message && (<p className="form-message success">{message}</p>)} {/* Display success message */}
       <form onSubmit={handleSubmit}>
         <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
