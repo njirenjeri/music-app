@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/SongCard.css';
-import { API_BASE_URL } from '../App';
+// import { API_BASE_URL } from '../App';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 const SongCard = ({ song, onBack, onAddToPlaylist, context, playlistId, setMessage}) => {
   const [playlists, setPlaylists] = useState([]);
