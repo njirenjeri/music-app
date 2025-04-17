@@ -6,8 +6,10 @@ import Register from './components/Auth/Register';
 import Dashboard from './pages/Dashboard';
 import './styles/global.css';
 
+
 // flask backend url
-export const API_BASE_URL = 'http://localhost:5000/api';
+// export const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('user'));
