@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import SongCard from '../components/SongCard';
-import { API_BASE_URL } from '../App';
+// import { API_BASE_URL } from '../App';
 import '../styles/Dashboard.css'
 import { FaDownload } from 'react-icons/fa';
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Dashboard = () => {
   const [songs, setSongs] = useState([]);
