@@ -24,6 +24,11 @@ app = Flask(__name__)
 # db = SQLAlchemy(app)
 # migrate = Migrate(app, db)
 
+app.config.update(
+    SESSION_COOKIE_SAMESITE="None",
+    SESSION_COOKIE_SECURE=True,
+)
+
 # Enable CORS for frontend domain
 CORS(app, supports_credentials=True, origins=os.environ.get("CORS_ORIGINS"))
 
