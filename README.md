@@ -1,5 +1,5 @@
 # music-app
-**The JukeBox** is an application that allows users to 
+**The JukeBox** is a full-stack web application that lets users explore songs, create playlists, and manage their music collection. Built with React and Flask, it offers a smooth and responsive experience for music lovers. 
 
 ## Features
 - User authentication (register, login, logout)

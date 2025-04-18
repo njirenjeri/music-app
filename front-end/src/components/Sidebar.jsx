@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import '../styles/Sidebar.css'
 import PlayList from './Playlists';
-import { API_BASE_URL } from '../App';
-
+// import { API_BASE_URL } from '../App';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 const Sidebar = ({ playlists, setPlaylists, onSelect, onEdit, onDelete }) => {
